@@ -26,10 +26,4 @@ public class Note {
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
-
-    public Note(String title, String content) {
-        this.title = title;
-        this.content = content;
-
-    }
 }
