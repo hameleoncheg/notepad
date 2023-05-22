@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ua.kiev.chameleon.notepad.dto.DeleteNoteDto;
 import ua.kiev.chameleon.notepad.dto.EditNoteDto;
+import ua.kiev.chameleon.notepad.dto.CreateNoteDto;
 import ua.kiev.chameleon.notepad.dto.NoteDto;
 import ua.kiev.chameleon.notepad.entity.Note;
 import ua.kiev.chameleon.notepad.service.NoteService;
@@ -17,8 +18,8 @@ public class NoteController {
     private final NoteService noteService;
 
     @GetMapping("/my-list")
-    public List<Note> getNotesList(){
-        List<Note> result = noteService.listAll();
+    public List<NoteDto> getNotesList(){
+        List<NoteDto> result = noteService.listAll();
         return result;
     }
 
@@ -29,7 +30,7 @@ public class NoteController {
     }
 
     @PostMapping("/create")
-    public String add(@RequestBody NoteDto dto) {
+    public String add(@RequestBody CreateNoteDto dto) {
         return noteService.addNewNote(dto);
     }
 
