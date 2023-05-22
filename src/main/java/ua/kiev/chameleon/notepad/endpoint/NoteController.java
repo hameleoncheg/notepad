@@ -1,13 +1,12 @@
 package ua.kiev.chameleon.notepad.endpoint;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.web.bind.annotation.*;
-import ua.kiev.chameleon.notepad.dto.DeleteNoteDTO;
+import ua.kiev.chameleon.notepad.dto.DeleteNoteDto;
+import ua.kiev.chameleon.notepad.dto.EditNoteDto;
 import ua.kiev.chameleon.notepad.dto.NoteDto;
 import ua.kiev.chameleon.notepad.entity.Note;
 import ua.kiev.chameleon.notepad.service.NoteService;
-
 import java.util.List;
 
 @RestController
@@ -16,48 +15,37 @@ import java.util.List;
 public class NoteController {
 
     private final NoteService noteService;
-    private final ConversionService conversionService;
 
-//    @PostMapping ("/create")
-//    public ModelAndView add(@RequestParam String title,
-//                            @RequestParam String content,
-//                            @RequestParam String accessType) {
-//        final Note note = new Note(title,content,accessType,noteService.getUserId());
-//
-//        return null;
-//    }
-
-    @GetMapping("/edit")
-    public Note edit(@RequestParam ("id") Long id){
-        Note note = noteService.getById(id);
-        System.out.println(note);
-        return note;
-    }
-
-    @PostMapping ("/edit")
-    public Object editById(@RequestParam Long id,
-                    @RequestParam String title,
-                    @RequestParam String content,
-                    @RequestParam String accessType){
-       // Map<String, Object> object = new HashMap<>();
-        return null;
-    }
-
-    @GetMapping("/list")
+    @GetMapping("/my-list")
     public List<Note> getNotesList(){
         List<Note> result = noteService.listAll();
         return result;
     }
 
+    @GetMapping("/all-list")
+    public List<Note> getPublicNotesList(){
+        List<Note> result = noteService.listAllByPublic();
+        return result;
+    }
+
     @PostMapping("/create")
     public String add(@RequestBody NoteDto dto) {
-        return noteService.add(dto);
+        return noteService.addNewNote(dto);
     }
 
     @PostMapping("/delete")
-    public String  delete(@RequestBody DeleteNoteDTO dto) {
+    public String  delete(@RequestBody DeleteNoteDto dto) {
         return  noteService.deleteById(dto);
     }
 
+    @PostMapping("/edit")
+    public String add(@RequestBody EditNoteDto dto) {
+        return noteService.updateNote(dto);
+    }
+
+    @GetMapping("/note/{id}")
+    public Note showNote(@PathVariable Long id){
+        return noteService.getById(id);
+    }
 
 }

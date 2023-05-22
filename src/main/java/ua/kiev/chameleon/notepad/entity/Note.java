@@ -25,5 +25,6 @@ public class Note {
     private Label label;
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
-
+    @Column(name = "EDITED_AT")
+    private LocalDateTime editedAt;
 }

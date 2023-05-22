@@ -24,6 +24,7 @@ CREATE TABLE notes(
                        USER_ID INT NOT NULL,
                        LABEL_ID INT,
                        CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                       EDITED_AT TIMESTAMP,
                        FOREIGN KEY (USER_ID) REFERENCES users (ID) ON DELETE CASCADE,
                        FOREIGN KEY (LABEL_ID) REFERENCES labels (ID) ON DELETE CASCADE,
                        CHECK (CHAR_LENGTH(TITLE) >= 5 AND CHAR_LENGTH(TITLE) <= 100),
