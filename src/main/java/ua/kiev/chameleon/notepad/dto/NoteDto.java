@@ -13,4 +13,5 @@ public class NoteDto {
     private AccessType accessType;
     private LocalDateTime createdAt;
     private LocalDateTime editedAt;
+    private String username;
 }

@@ -13,6 +13,5 @@ public class Label {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
-   // @Enumerated(EnumType.STRING)
     private String color;
 }

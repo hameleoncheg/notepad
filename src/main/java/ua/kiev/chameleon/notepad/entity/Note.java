@@ -1,5 +1,6 @@
 package ua.kiev.chameleon.notepad.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,9 @@ public class Note {
     private String content;
     @Enumerated(EnumType.STRING)
     private AccessType accessType;
+
     @ManyToOne
+    @JsonIgnore
     private User user;
     @ManyToOne
     @Enumerated(EnumType.STRING)

@@ -9,14 +9,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import javax.sql.DataSource;
 
+import javax.sql.DataSource;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig {
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,16 +32,16 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-@Autowired
-public void configureGlobal(AuthenticationManagerBuilder auth, DataSource dataSource)
-        throws Exception {
-    auth.jdbcAuthentication()
-            .dataSource(dataSource)
-            .usersByUsernameQuery("select name,password,enabled "
-                    + "from users "
-                    + "where name = ?")
-            .authoritiesByUsernameQuery("select name,authority "
-                    + "from authorities "
-                    + "where name = ?");
-}
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth, DataSource dataSource)
+            throws Exception {
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .usersByUsernameQuery("select name,password,enabled "
+                        + "from users "
+                        + "where name = ?")
+                .authoritiesByUsernameQuery("select name,authority "
+                        + "from authorities "
+                        + "where name = ?");
+    }
 }

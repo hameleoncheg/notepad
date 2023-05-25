@@ -14,7 +14,6 @@ import ua.kiev.chameleon.notepad.repository.NoteRepository;
 import ua.kiev.chameleon.notepad.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final UserRepository userRepository;
 
-    public String addNewNote(CreateNoteDto dto) {
+    public String createNote(CreateNoteDto dto) {
         Note note = new Note();
         note.setCreatedAt(LocalDateTime.now());
         note.setTitle(dto.getTitle());
@@ -37,31 +36,27 @@ public class NoteService {
         return "Все добре, нотатку " + note.getTitle() + " додали";
     }
 
-    public String deleteById(DeleteNoteDto dto) {
+    public String deleteNote(DeleteNoteDto dto) {
         Note note = getById(dto.getId());
         String title = note.getTitle();
         noteRepository.deleteById(dto.getId());
         return "Нотатку " + title + " видалили";
     }
 
-    public List<NoteDto> listAll() {
+    public List<NoteDto> getAllMyNotesList() {
         List<Note> notes = noteRepository.findAllByUserId(getUserId());
-        List<NoteDto> dtos = new ArrayList<>();
-        for (Note note: notes){
-            NoteDto dto = new NoteDto();
-            dto.setId(note.getId());
-            dto.setIndex(note.getIndex());
-            dto.setTitle(note.getTitle());
-            dto.setContent(note.getContent());
-            dto.setAccessType(note.getAccessType());
-            dto.setCreatedAt(note.getCreatedAt());
-            dto.setEditedAt(note.getEditedAt());
-            dtos.add(dto);
-        }
-        return dtos;
+        return convertListNoteToListNoteDto(notes);
     }
 
-    public String  updateNote(EditNoteDto dto) {
+    public List<NoteDto> getAllPublicNotesList() {
+        List<Note> notes = noteRepository.findAll()
+                .stream()
+                .filter(o-> Objects.equals(o.getAccessType(), AccessType.PUBLIC))
+                .collect(Collectors.toList());
+        return convertListNoteToListNoteDto(notes);
+    }
+
+    public String  editNote(EditNoteDto dto) {
         long id = dto.getId();
         if (!noteRepository.existsById(id)) {
             throw new IllegalArgumentException("Note with id=" + id + " does not exist");
@@ -75,11 +70,8 @@ public class NoteService {
         return "Все добре, нотатку з ID " + note.getId() + " відредагували";
     }
 
-    public List<Note> listAllByPublic() {
-        return noteRepository.findAll()
-                .stream()
-                .filter(o-> Objects.equals(o.getAccessType(), AccessType.PUBLIC))
-                .collect(Collectors.toList());
+    public NoteDto showNote(Long id){
+        return mapNoteToNoteDto(getById(id));
     }
 
     public Note getById(long id) {
@@ -96,6 +88,28 @@ public class NoteService {
         return principal.getId();
     }
 
+    public  AccessType[] getAccessType() {
+        return AccessType.values();
+    }
 
+    public List<NoteDto> convertListNoteToListNoteDto(List<Note> notes) {
+        return notes.stream().map(this::mapNoteToNoteDto).toList();
+    }
 
+    public NoteDto mapNoteToNoteDto(Note note){
+        NoteDto noteDto = new NoteDto();
+        noteDto.setId(note.getId());
+        noteDto.setIndex(note.getIndex());
+        noteDto.setTitle(note.getTitle());
+        noteDto.setContent(note.getContent());
+        noteDto.setAccessType(note.getAccessType());
+        noteDto.setCreatedAt(note.getCreatedAt());
+        noteDto.setEditedAt(note.getEditedAt());
+        noteDto.setUsername(note.getUser().getUsername());
+        return noteDto;
+    }
+
+    public List<Note>  listAll() {
+        return noteRepository.findAll();
+    }
 }
