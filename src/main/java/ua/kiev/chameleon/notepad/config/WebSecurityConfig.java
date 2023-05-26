@@ -8,7 +8,9 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
+import ua.kiev.chameleon.notepad.repository.UserRepository;
 
 import javax.sql.DataSource;
 
@@ -16,7 +18,7 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig {
-
+private final UserRepository userRepository;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -31,17 +33,21 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth, DataSource dataSource)
-            throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery("select name,password,enabled "
-                        + "from users "
-                        + "where name = ?")
-                .authoritiesByUsernameQuery("select name,authority "
-                        + "from authorities "
-                        + "where name = ?");
+    @Bean
+    public UserDetailsService userDetailsService(){
+        return userRepository::findByUsername;
     }
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth, DataSource dataSource)
+//            throws Exception {
+//        auth.jdbcAuthentication()
+//                .dataSource(dataSource)
+//                .usersByUsernameQuery("select name,password,enabled "
+//                        + "from users "
+//                        + "where name = ?")
+//                .authoritiesByUsernameQuery("select name,authority "
+//                        + "from authorities "
+//                        + "where name = ?");
+//    }
+
 }
