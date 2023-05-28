@@ -4,17 +4,17 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Data
 @Entity
 @NoArgsConstructor
 @Table(name = "users")
-public class User  implements UserDetails {
+public class User implements  UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -25,12 +25,10 @@ public class User  implements UserDetails {
     private String email;
     private int enabled;
 
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        return Collections.singletonList(new SimpleGrantedAuthority(getRole()));
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
     }
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -48,6 +46,10 @@ public class User  implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        if(enabled == 1){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

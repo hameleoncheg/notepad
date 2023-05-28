@@ -1,18 +1,14 @@
 package ua.kiev.chameleon.notepad.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import ua.kiev.chameleon.notepad.repository.UserRepository;
-
-import javax.sql.DataSource;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -26,6 +22,7 @@ private final UserRepository userRepository;
                 .disable()
                         .authorizeHttpRequests(
                 auth -> auth
+                        .requestMatchers("/all-list/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
         )
                 .httpBasic(Customizer.withDefaults())
@@ -37,17 +34,5 @@ private final UserRepository userRepository;
     public UserDetailsService userDetailsService(){
         return userRepository::findByUsername;
     }
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth, DataSource dataSource)
-//            throws Exception {
-//        auth.jdbcAuthentication()
-//                .dataSource(dataSource)
-//                .usersByUsernameQuery("select name,password,enabled "
-//                        + "from users "
-//                        + "where name = ?")
-//                .authoritiesByUsernameQuery("select name,authority "
-//                        + "from authorities "
-//                        + "where name = ?");
-//    }
 
 }
