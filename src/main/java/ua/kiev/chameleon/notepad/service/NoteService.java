@@ -111,10 +111,6 @@ public class NoteService {
         return noteDto;
     }
 
-    public List<Note>  listAll() {
-        return noteRepository.findAll();
-    }
-
     public List<Label>  getAllMyLabelsList() {
         return labelRepository.findAllByUser_Id(getUserId());
     }
@@ -127,4 +123,5 @@ public class NoteService {
         labelRepository.save(label);
         return "Категорію " + label.getName() + " створено";
     }
+
 }

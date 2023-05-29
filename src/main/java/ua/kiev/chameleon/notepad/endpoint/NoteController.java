@@ -53,11 +53,6 @@ public class NoteController {
         return  noteService.getAccessType();
     }
 
-    @GetMapping("/list")
-    public List<Note> list() {
-        return noteService.listAll();
-    }
-
     @GetMapping("/my-labels")
     public List<Label> getAllMyLabelsList() {
         return noteService.getAllMyLabelsList();
