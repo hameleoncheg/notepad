@@ -3,10 +3,7 @@ package ua.kiev.chameleon.notepad.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import ua.kiev.chameleon.notepad.dto.DeleteNoteDto;
-import ua.kiev.chameleon.notepad.dto.EditNoteDto;
-import ua.kiev.chameleon.notepad.dto.CreateNoteDto;
-import ua.kiev.chameleon.notepad.dto.NoteDto;
+import ua.kiev.chameleon.notepad.dto.*;
 import ua.kiev.chameleon.notepad.entity.AccessType;
 import ua.kiev.chameleon.notepad.entity.Label;
 import ua.kiev.chameleon.notepad.entity.Note;
@@ -19,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 
 @RequiredArgsConstructor
 @Service
@@ -117,5 +113,18 @@ public class NoteService {
 
     public List<Note>  listAll() {
         return noteRepository.findAll();
+    }
+
+    public List<Label>  getAllMyLabelsList() {
+        return labelRepository.findAllByUser_Id(getUserId());
+    }
+
+    public String  createLabel(LabelDto dto) {
+        Label label = new Label();
+        label.setName(dto.getName());
+        label.setColor(dto.getColor());
+        label.setUser(getUser());
+        labelRepository.save(label);
+        return "Категорію " + label.getName() + " створено";
     }
 }

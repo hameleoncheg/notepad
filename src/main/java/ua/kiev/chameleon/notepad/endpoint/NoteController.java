@@ -2,11 +2,9 @@ package ua.kiev.chameleon.notepad.endpoint;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ua.kiev.chameleon.notepad.dto.DeleteNoteDto;
-import ua.kiev.chameleon.notepad.dto.EditNoteDto;
-import ua.kiev.chameleon.notepad.dto.CreateNoteDto;
-import ua.kiev.chameleon.notepad.dto.NoteDto;
+import ua.kiev.chameleon.notepad.dto.*;
 import ua.kiev.chameleon.notepad.entity.AccessType;
+import ua.kiev.chameleon.notepad.entity.Label;
 import ua.kiev.chameleon.notepad.entity.Note;
 import ua.kiev.chameleon.notepad.service.NoteService;
 import java.util.List;
@@ -58,6 +56,16 @@ public class NoteController {
     @GetMapping("/list")
     public List<Note> list() {
         return noteService.listAll();
+    }
+
+    @GetMapping("/my-labels")
+    public List<Label> getAllMyLabelsList() {
+        return noteService.getAllMyLabelsList();
+    }
+
+    @PostMapping("/create-label")
+    public String createLabel(@RequestBody LabelDto dto) {
+        return noteService.createLabel(dto);
     }
 
 }
