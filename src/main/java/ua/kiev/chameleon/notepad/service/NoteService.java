@@ -8,8 +8,10 @@ import ua.kiev.chameleon.notepad.dto.EditNoteDto;
 import ua.kiev.chameleon.notepad.dto.CreateNoteDto;
 import ua.kiev.chameleon.notepad.dto.NoteDto;
 import ua.kiev.chameleon.notepad.entity.AccessType;
+import ua.kiev.chameleon.notepad.entity.Label;
 import ua.kiev.chameleon.notepad.entity.Note;
 import ua.kiev.chameleon.notepad.entity.User;
+import ua.kiev.chameleon.notepad.repository.LabelRepository;
 import ua.kiev.chameleon.notepad.repository.NoteRepository;
 import ua.kiev.chameleon.notepad.repository.UserRepository;
 
@@ -24,13 +26,16 @@ import java.util.stream.Collectors;
 public class NoteService {
     private final NoteRepository noteRepository;
     private final UserRepository userRepository;
+    private final LabelRepository labelRepository;
 
     public String createNote(CreateNoteDto dto) {
         Note note = new Note();
+        Label label = labelRepository.findByNameAndUser_Id(dto.getLabel(), getUserId());
         note.setCreatedAt(LocalDateTime.now());
         note.setTitle(dto.getTitle());
         note.setContent(dto.getContent());
         note.setAccessType(dto.getAccessType());
+        note.setLabel(label);
         note.setUser(getUser());
         noteRepository.save(note);
         return "Все добре, нотатку " + note.getTitle() + " додали";
@@ -103,6 +108,7 @@ public class NoteService {
         noteDto.setTitle(note.getTitle());
         noteDto.setContent(note.getContent());
         noteDto.setAccessType(note.getAccessType());
+        noteDto.setLabel(note.getLabel());
         noteDto.setCreatedAt(note.getCreatedAt());
         noteDto.setEditedAt(note.getEditedAt());
         noteDto.setUsername(note.getUser().getUsername());

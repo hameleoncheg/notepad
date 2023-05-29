@@ -22,8 +22,9 @@ private final UserRepository userRepository;
                 .disable()
                         .authorizeHttpRequests(
                 auth -> auth
-                        .requestMatchers("/all-list/**").hasAuthority("ADMIN")
+                        .requestMatchers("admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
+
         )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults());

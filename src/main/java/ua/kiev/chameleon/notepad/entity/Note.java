@@ -21,10 +21,8 @@ public class Note {
     private AccessType accessType;
 
     @ManyToOne
-    @JsonIgnore
     private User user;
     @ManyToOne
-    @Enumerated(EnumType.STRING)
     private Label label;
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;

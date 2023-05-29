@@ -8,4 +8,5 @@ public class CreateNoteDto {
     private String title;
     private String content;
     private AccessType accessType;
+    private String label;
 }

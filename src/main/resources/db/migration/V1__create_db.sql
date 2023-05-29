@@ -12,7 +12,9 @@ CREATE TABLE users(
 CREATE TABLE labels(
                        ID INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                        NAME VARCHAR (255),
-                       COLOR VARCHAR (255) DEFAULT 'WHITE' NOT NULL
+                       COLOR VARCHAR (255) DEFAULT 'WHITE' NOT NULL,
+                       USER_ID INT NOT NULL,
+                       FOREIGN KEY (USER_ID) REFERENCES users (ID) ON DELETE CASCADE
 );
 
 CREATE TABLE notes(
@@ -22,7 +24,7 @@ CREATE TABLE notes(
                        CONTENT VARCHAR (2048),
                        ACCESS_TYPE VARCHAR (2048),
                        USER_ID INT NOT NULL,
-                       LABEL_ID INT,
+                       LABEL_ID INT NOT NULL,
                        CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                        EDITED_AT TIMESTAMP,
                        FOREIGN KEY (USER_ID) REFERENCES users (ID) ON DELETE CASCADE,
@@ -33,8 +35,3 @@ CREATE TABLE notes(
 
 );
 
-CREATE TABLE AUTHORITIES (
-                             NAME VARCHAR(128) NOT NULL,
-                             AUTHORITY VARCHAR(128) NOT NULL,
-                             FOREIGN KEY (NAME) REFERENCES users (NAME)
-);
