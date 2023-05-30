@@ -1,14 +1,14 @@
 INSERT INTO USERS (NAME, EMAIL, PASSWORD, ROLE, ENABLED)
 VALUES ('Oleksii',
         'hameleoncheg@gmail.com',
-        '{noop}admin',
+        '{bcrypt}$2y$05$0Y37QgxViGxCvv2vO6k6l.ZxQPQi5XWe1lyGRlgi84UwtoQ3mVZlK',
         'ADMIN',
         1);
 
 INSERT INTO USERS (NAME, EMAIL, PASSWORD, ROLE, ENABLED)
 VALUES ('IVAN',
         'hameleoncheg2@gmail.com',
-        '{noop}admin',
+        '{bcrypt}$2y$05$0Y37QgxViGxCvv2vO6k6l.ZxQPQi5XWe1lyGRlgi84UwtoQ3mVZlK',
         'USER',
         1);
 

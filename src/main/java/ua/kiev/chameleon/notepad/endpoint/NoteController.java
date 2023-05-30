@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ua.kiev.chameleon.notepad.dto.*;
 import ua.kiev.chameleon.notepad.entity.AccessType;
 import ua.kiev.chameleon.notepad.entity.Label;
-import ua.kiev.chameleon.notepad.entity.Note;
 import ua.kiev.chameleon.notepad.service.NoteService;
 import java.util.List;
 

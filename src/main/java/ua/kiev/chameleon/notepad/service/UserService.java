@@ -1,6 +1,8 @@
 package ua.kiev.chameleon.notepad.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ua.kiev.chameleon.notepad.dto.CreateUserDto;
 import ua.kiev.chameleon.notepad.dto.DeleteUserDto;
@@ -20,6 +22,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final LabelRepository labelRepository;
     private final NoteService noteService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     public EditUserDto showUser(Long id){
         User user = userRepository.findUserById(id);
@@ -56,7 +61,8 @@ public class UserService {
     public String createUser(CreateUserDto dto){
         User user = new User();
         user.setUsername(dto.getUsername());
-        user.setPassword(dto.getPassword());
+       // user.setPassword(dto.getPassword());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setEmail(dto.getEmail());
         user.setRole(dto.getRole());
         user.setEnabled(dto.getEnabled());

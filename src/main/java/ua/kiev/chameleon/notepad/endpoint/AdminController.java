@@ -3,7 +3,6 @@ package ua.kiev.chameleon.notepad.endpoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ua.kiev.chameleon.notepad.dto.CreateUserDto;
-import ua.kiev.chameleon.notepad.dto.DeleteNoteDto;
 import ua.kiev.chameleon.notepad.dto.DeleteUserDto;
 import ua.kiev.chameleon.notepad.dto.EditUserDto;
 import ua.kiev.chameleon.notepad.service.UserService;
