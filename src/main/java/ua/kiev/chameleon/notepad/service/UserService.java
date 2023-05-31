@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ua.kiev.chameleon.notepad.dto.CreateUserDto;
-import ua.kiev.chameleon.notepad.dto.DeleteUserDto;
-import ua.kiev.chameleon.notepad.dto.EditMyUserDto;
-import ua.kiev.chameleon.notepad.dto.EditUserDto;
+import ua.kiev.chameleon.notepad.dto.*;
 import ua.kiev.chameleon.notepad.entity.Label;
 import ua.kiev.chameleon.notepad.entity.User;
 import ua.kiev.chameleon.notepad.repository.LabelRepository;
@@ -22,35 +19,52 @@ public class UserService {
     private final UserRepository userRepository;
     private final LabelRepository labelRepository;
     private final NoteService noteService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    public EditUserDto showUser(Long id){
+    public Response showUser(Long id) {
+        Response response = new Response();
         User user = userRepository.findUserById(id);
-        return mapUserToUserDto(user);
+        if (user == null) {
+            response.setCode("error");
+            response.setMessage("Користувача з ID " + id + " існує");
+        } else {
+            response.setCode("OK");
+            response.setPayload(mapUserToUserDto(user));
+        }
+        return response;
     }
-    public EditMyUserDto showMyUser(){
+
+    public Response showMyUser(){
         User user = userRepository.findUserById(noteService.getUserId());
         EditMyUserDto editMyUserDto = new EditMyUserDto();
         editMyUserDto.setUsername(user.getUsername());
         editMyUserDto.setEmail(user.getEmail());
-        return editMyUserDto;
+        Response response = new Response();
+        response.setCode("OK");
+        response.setPayload(editMyUserDto);
+        return response;
     }
 
-    public String editMyUser(EditMyUserDto dto){
+    public Response editMyUser(EditMyUserDto dto){
         User user = userRepository.findUserById(noteService.getUserId());
         user.setUsername(dto.getUsername());
         user.setPassword(dto.getPassword());
         user.setEmail(dto.getEmail());
         userRepository.save(user);
-        return "Все добре, Ви відредгували свій profile";
+        ResponseString responseString = new ResponseString();
+        responseString.setResult("Все добре, Ви відредагували свій profile");
+        Response response = new Response();
+        response.setCode("OK");
+        response.setPayload(responseString);
+        return response;
     }
 
     public String editUser(EditUserDto dto){
         User user = userRepository.findUserById(dto.getId());
         user.setUsername(dto.getUsername());
-        user.setPassword(dto.getPassword());
+       // user.setPassword(dto.getPassword());
         user.setRole(dto.getRole());
         user.setEmail(dto.getEmail());
         user.setEnabled(dto.getEnabled());
@@ -61,7 +75,6 @@ public class UserService {
     public String createUser(CreateUserDto dto){
         User user = new User();
         user.setUsername(dto.getUsername());
-       // user.setPassword(dto.getPassword());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setEmail(dto.getEmail());
         user.setRole(dto.getRole());
@@ -74,16 +87,29 @@ public class UserService {
         labelRepository.save(label);
         return "Все добре, юзвера " + user.getUsername() + " добавили";
     }
-    public List<EditUserDto> showAllUser(){
+    public Response showAllUser(){
         List<User> users = userRepository.findAll();
-        return convertListUserToListUserDto(users);
+        Response response = new Response();
+        response.setCode("OK");
+        response.setPayload(convertListUserToListUserDto(users));
+        return response;
     }
 
-    public String deleteUser(DeleteUserDto dto){
+    public Response deleteUser(DeleteUserDto dto){
+        ResponseString responseString = new ResponseString();
+        Response response = new Response();
+        if(!userRepository.existsById(dto.getId())){
+            response.setCode("error");
+            response.setMessage("Користувача з такитм ID не існує");
+            return response;
+        }
         User user = userRepository.findUserById(dto.getId());
         String name = user.getUsername();
         userRepository.deleteById(dto.getId());
-        return "Все добре, юзвера " + name + " видалили";
+        responseString.setResult("Все добре, користувача " + name + " видалили");
+        response.setCode("OK");
+        response.setPayload(responseString);
+        return response;
     }
 
     public EditUserDto mapUserToUserDto(User user){
@@ -100,5 +126,4 @@ public class UserService {
     public List<EditUserDto> convertListUserToListUserDto(List<User> users) {
         return users.stream().map(this::mapUserToUserDto).toList();
     }
-
 }

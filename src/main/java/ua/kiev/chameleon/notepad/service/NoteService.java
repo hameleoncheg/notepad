@@ -44,17 +44,23 @@ public class NoteService {
         return "Нотатку " + title + " видалили";
     }
 
-    public List<NoteDto> getAllMyNotesList() {
+    public Response getAllMyNotesList() {
         List<Note> notes = noteRepository.findAllByUserId(getUserId());
-        return convertListNoteToListNoteDto(notes);
+        Response response = new Response();
+        response.setCode("OK");
+        response.setPayload(convertListNoteToListNoteDto(notes));
+        return response;
     }
 
-    public List<NoteDto> getAllPublicNotesList() {
+    public Response getAllPublicNotesList() {
         List<Note> notes = noteRepository.findAll()
                 .stream()
                 .filter(o-> Objects.equals(o.getAccessType(), AccessType.PUBLIC))
                 .collect(Collectors.toList());
-        return convertListNoteToListNoteDto(notes);
+        Response response = new Response();
+        response.setCode("OK");
+        response.setPayload(convertListNoteToListNoteDto(notes));
+        return response;
     }
 
     public String  editNote(EditNoteDto dto) {
@@ -71,8 +77,16 @@ public class NoteService {
         return "Все добре, нотатку з ID " + note.getId() + " відредагували";
     }
 
-    public NoteDto showNote(Long id){
-        return mapNoteToNoteDto(getById(id));
+    public Response showNote(Long id){
+        Response response = new Response();
+        if(!noteRepository.existsById(id)){
+            response.setCode("error");
+            response.setMessage("Такої нотатки не існує");
+            return response;
+        }
+        response.setCode("OK");
+        response.setPayload(mapNoteToNoteDto(getById(id)));
+        return response;
     }
 
     public Note getById(long id) {
@@ -89,8 +103,11 @@ public class NoteService {
         return principal.getId();
     }
 
-    public  AccessType[] getAccessType() {
-        return AccessType.values();
+    public Response getAccessType() {
+        Response response = new Response();
+        response.setCode("OK");
+        response.setPayload(AccessType.values());
+        return response;
     }
 
     public List<NoteDto> convertListNoteToListNoteDto(List<Note> notes) {
@@ -111,8 +128,11 @@ public class NoteService {
         return noteDto;
     }
 
-    public List<Label>  getAllMyLabelsList() {
-        return labelRepository.findAllByUser_Id(getUserId());
+    public Response getAllMyLabelsList() {
+        Response response = new Response();
+        response.setCode("OK");
+        response.setPayload(labelRepository.findAllByUser_Id(getUserId()));
+        return response;
     }
 
     public String  createLabel(LabelDto dto) {

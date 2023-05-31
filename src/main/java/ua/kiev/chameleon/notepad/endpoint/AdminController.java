@@ -5,9 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ua.kiev.chameleon.notepad.dto.CreateUserDto;
 import ua.kiev.chameleon.notepad.dto.DeleteUserDto;
 import ua.kiev.chameleon.notepad.dto.EditUserDto;
+import ua.kiev.chameleon.notepad.dto.Response;
 import ua.kiev.chameleon.notepad.service.UserService;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ public class AdminController {
     private final UserService userService;
 
     @GetMapping("/user/{id}")
-    public EditUserDto showUser(@PathVariable Long id){
+    public Response showUser(@PathVariable Long id){
         return userService.showUser(id);
     }
 
@@ -33,12 +32,12 @@ public class AdminController {
     }
 
     @GetMapping("/all-users")
-    public List<EditUserDto> showAllUser(){
+    public Response showAllUser(){
         return userService.showAllUser();
     }
 
     @PostMapping("/delete")
-    public String  deleteUser(@RequestBody DeleteUserDto dto) {
+    public Response  deleteUser(@RequestBody DeleteUserDto dto) {
         return  userService.deleteUser(dto);
     }
 }

@@ -3,10 +3,7 @@ package ua.kiev.chameleon.notepad.endpoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ua.kiev.chameleon.notepad.dto.*;
-import ua.kiev.chameleon.notepad.entity.AccessType;
-import ua.kiev.chameleon.notepad.entity.Label;
 import ua.kiev.chameleon.notepad.service.NoteService;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,15 +13,13 @@ public class NoteController {
     private final NoteService noteService;
 
     @GetMapping("/my-list")
-    public List<NoteDto> getAllMyNotesList(){
-        List<NoteDto> result = noteService.getAllMyNotesList();
-        return result;
+    public Response getAllMyNotesList(){
+        return noteService.getAllMyNotesList();
     }
 
     @GetMapping("/all-list")
-    public List<NoteDto> getAllPublicNotesList(){
-        List<NoteDto> result = noteService.getAllPublicNotesList();
-        return result;
+    public Response getAllPublicNotesList(){
+        return noteService.getAllPublicNotesList();
     }
 
     @PostMapping("/create")
@@ -43,17 +38,17 @@ public class NoteController {
     }
 
     @GetMapping("/note/{id}")
-    public NoteDto showNote(@PathVariable Long id){
+    public Response showNote(@PathVariable Long id){
         return noteService.showNote(id);
     }
 
     @GetMapping("/access")
-    public AccessType[] getAccessType(){
+    public Response getAccessType(){
         return  noteService.getAccessType();
     }
 
     @GetMapping("/my-labels")
-    public List<Label> getAllMyLabelsList() {
+    public Response getAllMyLabelsList() {
         return noteService.getAllMyLabelsList();
     }
 
