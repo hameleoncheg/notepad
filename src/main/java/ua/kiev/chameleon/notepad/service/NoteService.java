@@ -11,6 +11,7 @@ import ua.kiev.chameleon.notepad.entity.User;
 import ua.kiev.chameleon.notepad.repository.LabelRepository;
 import ua.kiev.chameleon.notepad.repository.NoteRepository;
 import ua.kiev.chameleon.notepad.repository.UserRepository;
+import ua.kiev.chameleon.notepad.util.Util;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,7 +25,7 @@ public class NoteService {
     private final UserRepository userRepository;
     private final LabelRepository labelRepository;
 
-    public String createNote(CreateNoteDto dto) {
+    public Response createNote(CreateNoteDto dto) {
         Note note = new Note();
         Label label = labelRepository.findByNameAndUser_Id(dto.getLabel(), getUserId());
         note.setCreatedAt(LocalDateTime.now());
@@ -34,22 +35,20 @@ public class NoteService {
         note.setLabel(label);
         note.setUser(getUser());
         noteRepository.save(note);
-        return "Все добре, нотатку " + note.getTitle() + " додали";
+        return Util.createOkStringAnswer("Все добре, нотатку " + note.getTitle() + " додали");
     }
 
-    public String deleteNote(DeleteNoteDto dto) {
-        Note note = getById(dto.getId());
-        String title = note.getTitle();
+    public Response deleteNote(DeleteNoteDto dto) {
+        if(!noteRepository.existsById(dto.getId())){
+            return Util.createErrorStringAnswer("Такої нотатки не існує");
+        }
         noteRepository.deleteById(dto.getId());
-        return "Нотатку " + title + " видалили";
+        return Util.createOkStringAnswer("Нотатку " + getById(dto.getId()).getTitle() + " видалили");
     }
 
     public Response getAllMyNotesList() {
         List<Note> notes = noteRepository.findAllByUserId(getUserId());
-        Response response = new Response();
-        response.setCode("OK");
-        response.setPayload(convertListNoteToListNoteDto(notes));
-        return response;
+        return Util.createOkObjectAnswer(Util.convertListNoteToListNoteDto(notes));
     }
 
     public Response getAllPublicNotesList() {
@@ -57,16 +56,12 @@ public class NoteService {
                 .stream()
                 .filter(o-> Objects.equals(o.getAccessType(), AccessType.PUBLIC))
                 .collect(Collectors.toList());
-        Response response = new Response();
-        response.setCode("OK");
-        response.setPayload(convertListNoteToListNoteDto(notes));
-        return response;
+        return Util.createOkObjectAnswer(Util.convertListNoteToListNoteDto(notes));
     }
 
-    public String  editNote(EditNoteDto dto) {
-        long id = dto.getId();
-        if (!noteRepository.existsById(id)) {
-            throw new IllegalArgumentException("Note with id=" + id + " does not exist");
+    public Response  editNote(EditNoteDto dto) {
+        if (!noteRepository.existsById(dto.getId())) {
+            return Util.createErrorStringAnswer("Note with id=" + dto.getId() + " does not exist");
         }
         Note note = getById(dto.getId());
         note.setEditedAt(LocalDateTime.now());
@@ -74,24 +69,18 @@ public class NoteService {
         note.setContent(dto.getContent());
         note.setAccessType(dto.getAccessType());
         noteRepository.save(note);
-        return "Все добре, нотатку з ID " + note.getId() + " відредагували";
+        return Util.createOkStringAnswer("Все добре, нотатку з ID " + note.getId() + " відредагували");
     }
 
     public Response showNote(Long id){
-        Response response = new Response();
         if(!noteRepository.existsById(id)){
-            response.setCode("error");
-            response.setMessage("Такої нотатки не існує");
-            return response;
+            return Util.createErrorStringAnswer("Такої нотатки не існує");
         }
-        response.setCode("OK");
-        response.setPayload(mapNoteToNoteDto(getById(id)));
-        return response;
+        return Util.createOkObjectAnswer(Util.mapNoteToNoteDto(getById(id)));
     }
 
     public Note getById(long id) {
-        Note note = noteRepository.getReferenceById(id);
-        return note;
+        return noteRepository.getReferenceById(id);
     }
 
     public User getUser() {
@@ -104,44 +93,20 @@ public class NoteService {
     }
 
     public Response getAccessType() {
-        Response response = new Response();
-        response.setCode("OK");
-        response.setPayload(AccessType.values());
-        return response;
-    }
-
-    public List<NoteDto> convertListNoteToListNoteDto(List<Note> notes) {
-        return notes.stream().map(this::mapNoteToNoteDto).toList();
-    }
-
-    public NoteDto mapNoteToNoteDto(Note note){
-        NoteDto noteDto = new NoteDto();
-        noteDto.setId(note.getId());
-        noteDto.setIndex(note.getIndex());
-        noteDto.setTitle(note.getTitle());
-        noteDto.setContent(note.getContent());
-        noteDto.setAccessType(note.getAccessType());
-        noteDto.setLabel(note.getLabel());
-        noteDto.setCreatedAt(note.getCreatedAt());
-        noteDto.setEditedAt(note.getEditedAt());
-        noteDto.setUsername(note.getUser().getUsername());
-        return noteDto;
+        return Util.createOkObjectAnswer(AccessType.values());
     }
 
     public Response getAllMyLabelsList() {
-        Response response = new Response();
-        response.setCode("OK");
-        response.setPayload(labelRepository.findAllByUser_Id(getUserId()));
-        return response;
+        return Util.createOkObjectAnswer(labelRepository.findAllByUser_Id(getUserId()));
     }
 
-    public String  createLabel(LabelDto dto) {
+    public Response createLabel(LabelDto dto) {
         Label label = new Label();
         label.setName(dto.getName());
         label.setColor(dto.getColor());
         label.setUser(getUser());
         labelRepository.save(label);
-        return "Категорію " + label.getName() + " створено";
+        return Util.createOkStringAnswer("Категорію " + label.getName() + " створено");
     }
 
 }

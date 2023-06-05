@@ -23,17 +23,17 @@ public class NoteController {
     }
 
     @PostMapping("/create")
-    public String createNote(@RequestBody CreateNoteDto dto) {
+    public Response createNote(@RequestBody CreateNoteDto dto) {
         return noteService.createNote(dto);
     }
 
     @PostMapping("/delete")
-    public String  deleteNote(@RequestBody DeleteNoteDto dto) {
+    public Response  deleteNote(@RequestBody DeleteNoteDto dto) {
         return  noteService.deleteNote(dto);
     }
 
     @PostMapping("/edit")
-    public String editNote(@RequestBody EditNoteDto dto) {
+    public Response editNote(@RequestBody EditNoteDto dto) {
         return noteService.editNote(dto);
     }
 
@@ -53,7 +53,7 @@ public class NoteController {
     }
 
     @PostMapping("/create-label")
-    public String createLabel(@RequestBody LabelDto dto) {
+    public Response createLabel(@RequestBody LabelDto dto) {
         return noteService.createLabel(dto);
     }
 

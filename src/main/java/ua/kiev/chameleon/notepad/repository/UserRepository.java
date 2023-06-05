@@ -6,4 +6,8 @@ import ua.kiev.chameleon.notepad.entity.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername (String username);
     User findUserById(long id);
+    User findUserByEmail(String email);
+
+
+
 }

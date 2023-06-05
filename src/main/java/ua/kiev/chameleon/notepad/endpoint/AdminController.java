@@ -22,12 +22,12 @@ public class AdminController {
     }
 
     @PostMapping("/edit")
-    public String editUser(@RequestBody EditUserDto dto){
+    public Response editUser(@RequestBody EditUserDto dto){
         return userService.editUser(dto);
     }
 
     @PostMapping("/create")
-    public String createUser(@RequestBody CreateUserDto dto){
+    public Response createUser(@RequestBody CreateUserDto dto){
         return userService.createUser(dto);
     }
 
