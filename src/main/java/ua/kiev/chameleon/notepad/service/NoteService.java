@@ -40,10 +40,17 @@ public class NoteService {
 
     public Response deleteNote(DeleteNoteDto dto) {
         if(!noteRepository.existsById(dto.getId())){
-            return Util.createErrorStringAnswer("Такої нотатки не існує");
+            return Util.createErrorStringAnswer("Нотатки  з ID " + dto.getId() + " не існує");
         }
-        noteRepository.deleteById(dto.getId());
-        return Util.createOkStringAnswer("Нотатку " + getById(dto.getId()).getTitle() + " видалили");
+         String noteTitle = getById(dto.getId()).getTitle();
+         if(getUser().getRole().equals("ADMIN")) {
+            noteRepository.deleteById(dto.getId());
+            return Util.createOkStringAnswer("Нотатка " + noteTitle + " видалена");
+        } else if(noteRepository.findNoteById(dto.getId()).getUser().getId() != getUserId()){
+            return Util.createErrorStringAnswer("Нотатка Вам не належить");
+        }
+            noteRepository.deleteById(dto.getId());
+            return Util.createOkStringAnswer("Нотатка " + noteTitle + " видалена");
     }
 
     public Response getAllMyNotesList() {
@@ -61,7 +68,9 @@ public class NoteService {
 
     public Response  editNote(EditNoteDto dto) {
         if (!noteRepository.existsById(dto.getId())) {
-            return Util.createErrorStringAnswer("Note with id=" + dto.getId() + " does not exist");
+            return Util.createErrorStringAnswer("Нотатки з ID " + dto.getId() + " не існує");
+        } else if(dto.getTitle().length() >= 20) {
+            return Util.createErrorStringAnswer( "Назва нотатки не повинна перевищувати 20 символів");
         }
         Note note = getById(dto.getId());
         note.setEditedAt(LocalDateTime.now());
@@ -74,7 +83,11 @@ public class NoteService {
 
     public Response showNote(Long id){
         if(!noteRepository.existsById(id)){
-            return Util.createErrorStringAnswer("Такої нотатки не існує");
+            return Util.createErrorStringAnswer("Нотатки  з ID " + id + " не існує");
+        }else if(getUser().getRole().equals("ADMIN")) {
+            return Util.createOkObjectAnswer(Util.mapNoteToNoteDto(getById(id)));
+        } else if(noteRepository.findNoteById(id).getUser().getId() != getUserId()){
+            return Util.createErrorStringAnswer("Нотатки  з ID" + id + " Вам не належить");
         }
         return Util.createOkObjectAnswer(Util.mapNoteToNoteDto(getById(id)));
     }

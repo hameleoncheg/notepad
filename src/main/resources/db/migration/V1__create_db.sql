@@ -33,4 +33,3 @@ CREATE TABLE notes(
                        CHECK (CHAR_LENGTH(CONTENT) >= 5 AND CHAR_LENGTH(CONTENT) <= 10000),
                        CHECK (ACCESS_TYPE IN ('PRIVATE','PUBLIC','REGISTER'))
 );
-

@@ -30,13 +30,13 @@ VALUES (1,
         'TestContent',
         'PUBLIC',
         1,
-        1);
-
-INSERT INTO NOTES (INDEX, TITLE, CONTENT, ACCESS_TYPE, USER_ID, LABEL_ID)
-VALUES (2,
+        1),
+       (2,
         'TestNote2',
         'TestContent2',
         'PUBLIC',
         2,
         2);
+
+
 
